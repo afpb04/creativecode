@@ -1,3 +1,4 @@
+import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
@@ -11,7 +12,7 @@ class ProfileUserController {
 
     const user = await profileUserUseCase.execute(id);
 
-    return response.json(user);
+    return response.json(classToClass(user));
   }
 }
 

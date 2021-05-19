@@ -1,7 +1,7 @@
 import { injectable, inject } from 'tsyringe';
 
-import IUserResponseDTO from '../../dtos/IUserResponseDTO';
-import UserMap from '../../mapper/UserMap';
+import AppError from '../../../../shared/errors/AppError';
+import User from '../../infra/typeorm/entities/User';
 import IUsersRepository from '../../repositories/IUsersRepository';
 
 @injectable()
@@ -11,10 +11,13 @@ class ProfileUserUseCase {
     private usersRepository: IUsersRepository,
   ) {}
 
-  async execute(id: string): Promise<IUserResponseDTO> {
+  async execute(id: string): Promise<User> {
     const user = await this.usersRepository.findById(id);
+    if (!user) {
+      throw new AppError('User does not exists!');
+    }
 
-    return UserMap.toDTO(user);
+    return user;
   }
 }
 export default ProfileUserUseCase;
