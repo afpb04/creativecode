@@ -1,5 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 
+import AppError from '../../../../shared/errors/AppError';
+import IUsersRepository from '../../../users/repositories/IUsersRepository';
 import Address from '../../infra/typeorm/entities/Address';
 import IAddressRepository from '../../repositories/IAddressRepository';
 
@@ -18,6 +20,8 @@ class CreateAddressUseCase {
   constructor(
     @inject('AddressRepository')
     private addressRepository: IAddressRepository,
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
   ) {}
   async execute({
     address,
@@ -28,6 +32,10 @@ class CreateAddressUseCase {
     state,
     user_id,
   }: IRequest): Promise<Address> {
+    const user = await this.usersRepository.findById(user_id);
+    if (!user) {
+      throw new AppError('User does not exists!');
+    }
     const newAddress = await this.addressRepository.create({
       address,
       number,
