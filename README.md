@@ -6,7 +6,7 @@ Api em nodejs com typescript
 
 ```bash
 # Clone este repositório
-$ git clone <>
+$ git clone <https://github.com/afpb04/creativecode.git>
 
 # Acesse a pasta do projeto no terminal/cmd
 $ cd creativecode
