@@ -1,3 +1,4 @@
+import { celebrate, Segments, Joi } from 'celebrate';
 import { Router } from 'express';
 
 import CreateUserController from '../../../../modules/users/useCases/createUser/CreateUserController';
@@ -18,7 +19,21 @@ const updateUserController = new UpdateUserController();
 const profileUserController = new ProfileUserController();
 const deleteUserController = new DeleteUserController();
 
-usersRoutes.post('/', createUserController.handle);
+usersRoutes.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      name: Joi.string().required(),
+      phone: Joi.string().required(),
+      email: Joi.string().email().required(),
+      age: Joi.string().required(),
+      weight: Joi.number().required(),
+      gender: Joi.string().required(),
+      password: Joi.string().required(),
+    },
+  }),
+  createUserController.handle,
+);
 usersRoutes.get('/', ensureAuthenticated, listUsersController.handle);
 usersRoutes.get('/profile', ensureAuthenticated, profileUserController.handle);
 
@@ -30,6 +45,17 @@ usersRoutes.get(
 );
 usersRoutes.put(
   '/update/:id',
+  celebrate({
+    [Segments.BODY]: {
+      name: Joi.string().required(),
+      phone: Joi.string().required(),
+      email: Joi.string().email().required(),
+      age: Joi.string().required(),
+      weight: Joi.number().required(),
+      gender: Joi.string().required(),
+      password: Joi.string().required(),
+    },
+  }),
   ensureAuthenticated,
   ensureAdmin,
   updateUserController.handle,
